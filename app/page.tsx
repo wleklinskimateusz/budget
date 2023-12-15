@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { UserButton, currentUser } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,7 +11,7 @@ export default async function Home() {
           search: "q=nextjs",
         }}
       >
-        <Button>Click me</Button>
+        <button className="btn btn-primary">Click me</button>
         <div className="fixed top-5 right-5">
           <UserButton afterSignOutUrl="/" />
         </div>
