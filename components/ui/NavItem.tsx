@@ -1,6 +1,7 @@
-import Link, { LinkProps } from "next/link";
-import { twMerge } from "tailwind-merge";
-import { Icon, IconName } from "@virtuslab/tetrisly-icons";
+import { LinkProps } from "next/link";
+
+import { IconName } from "@virtuslab/tetrisly-icons";
+import { Link } from "./Link";
 
 type NavItemProps = {
   href: LinkProps["href"];
@@ -10,26 +11,10 @@ type NavItemProps = {
   active?: boolean;
 };
 
-export const NavItem = ({
-  href,
-  children,
-  active,
-  className,
-  icon,
-}: NavItemProps) => {
+export const NavItem = ({ active, className, ...rest }: NavItemProps) => {
   return (
     <li className={className}>
-      <Link
-        href={href}
-        className={twMerge(
-          "hover:bg-neutral-200 px-4 py-2 rounded",
-          active && "text-brand-500",
-          "flex items-center gap-2"
-        )}
-      >
-        {icon && <Icon name={icon} />}
-        <span>{children}</span>
-      </Link>
+      <Link className={active ? "text-brand-500" : ""} {...rest} />
     </li>
   );
 };
