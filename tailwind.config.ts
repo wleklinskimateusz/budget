@@ -6,7 +6,11 @@ import colors from "tailwindcss/colors";
 const brandColor = "orange" satisfies keyof typeof colors;
 
 const config = {
-  content: ["./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}"],
+  content: [
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./stories/**/*.{ts,tsx}",
+  ],
   theme: {
     extend: {
       colors: {
