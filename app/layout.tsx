@@ -19,14 +19,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body
-          className={twMerge(
-            inter.className,
-            "dark:bg-neutral-950 bg-neutral-50"
-          )}
-        >
-          {children}
-        </body>
+        <body className={twMerge(inter.className)}>{children}</body>
       </html>
     </ClerkProvider>
   );
