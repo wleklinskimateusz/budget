@@ -4,11 +4,11 @@ import { twMerge } from "tailwind-merge";
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "brand" | "neutral" | "danger" | "success" | "warning";
 }
-export function Button({
+export const Button = ({
   variant = "neutral",
   className,
   ...rest
-}: ButtonProps) {
+}: ButtonProps) => {
   return (
     <button
       className={twMerge(
@@ -31,4 +31,4 @@ export function Button({
       {...rest}
     />
   );
-}
+};

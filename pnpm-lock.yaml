@@ -26,6 +26,9 @@ dependencies:
   '@vercel/postgres':
     specifier: ^0.5.1
     version: 0.5.1
+  '@virtuslab/tetrisly-icons':
+    specifier: ^1.1.1
+    version: 1.1.1
   next:
     specifier: 14.0.3
     version: 14.0.3(@babel/core@7.23.6)(react-dom@18.2.0)(react@18.2.0)
@@ -4441,6 +4444,13 @@ packages:
       bufferutil: 4.0.8
       utf-8-validate: 6.0.3
       ws: 8.14.2(bufferutil@4.0.8)(utf-8-validate@6.0.3)
+    dev: false
+
+  /@virtuslab/tetrisly-icons@1.1.1:
+    resolution: {integrity: sha512-rO1W8nDm0NNfHvjHpmlsdK64bTYhqao+TdLJA1p6Bz90zkJoq+/b0bSmjwkeBKkYQb8oMPJNvShbLCPpqAa0QA==}
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
     dev: false
 
   /@vitest/expect@0.34.7:
