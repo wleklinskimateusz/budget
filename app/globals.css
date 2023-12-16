@@ -2,6 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  @apply text-primary;
+body {
+  @apply dark:bg-neutral-950 bg-neutral-50;
 }
