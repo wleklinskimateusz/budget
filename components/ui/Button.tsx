@@ -12,10 +12,14 @@ export function Button({
   return (
     <button
       className={twMerge(
-        "rounded px-4 py-2",
+        "rounded-sm px-4 py-2",
+        // neutral variant
         variant === "neutral" &&
-          "bg-primary text-primary hover:bg-primary-hover hover:text-primary-hover",
-        variant === "brand" && "bg-brand-50",
+          "bg-neutral-200 text-neutral-900 hover:bg-neutral-300 hover:text-neutral-800",
+        variant === "neutral" &&
+          "dark:bg-neutral-900 hover:dark:bg-neutral-800 dark:text-neutral-200 dark:hover:text-neutral-300",
+        // brand variant
+        variant === "brand" && "bg-brand-500 text-white hover:bg-brand-400",
         className
       )}
       {...rest}

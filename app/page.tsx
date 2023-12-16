@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/Button";
 import { UserButton, currentUser } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,11 +12,12 @@ export default async function Home() {
           search: "q=nextjs",
         }}
       >
-        <button className="btn btn-primary">Click me</button>
-        <div className="fixed top-5 right-5">
-          <UserButton afterSignOutUrl="/" />
-        </div>
+        <Button>Search Next.js</Button>
+        <Button variant="brand">Search Next.js</Button>
       </Link>
+      <div className="fixed top-5 right-5">
+        <UserButton afterSignOutUrl="/" />
+      </div>
     </main>
   );
 }
