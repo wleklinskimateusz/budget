@@ -25,7 +25,7 @@ export default async function Categories() {
           });
         }}
       >
-        <input className=" text-input" name="name" />
+        <input name="name" />
         <label>Name</label>
       </form>
       <ul>
