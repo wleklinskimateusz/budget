@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { twMerge } from "tailwind-merge";
+import { Nav } from "@/components/Nav";
+import { NavItem } from "@/components/ui/NavItem";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,7 +21,10 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={twMerge(inter.className)}>{children}</body>
+        <body className={twMerge(inter.className, "flex")}>
+          <Nav />
+          <main>{children}</main>
+        </body>
       </html>
     </ClerkProvider>
   );
