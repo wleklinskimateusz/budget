@@ -2,7 +2,7 @@ import { InputHTMLAttributes, forwardRef } from "react";
 import { twMerge } from "tailwind-merge";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  label: string;
+  label?: string;
   error?: string | boolean;
 }
 
