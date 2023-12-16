@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/Button";
 import { UserButton, currentUser } from "@clerk/nextjs";
-import Image from "next/image";
 import Link from "next/link";
 
 export default async function Home() {

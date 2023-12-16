@@ -12,7 +12,7 @@ export function Button({
   return (
     <button
       className={twMerge(
-        "rounded-sm px-4 py-2",
+        "rounded px-4 py-2 focus-visible:ring-offset-4",
 
         variant === "neutral" &&
           "bg-neutral-200 text-neutral-900 hover:bg-neutral-300 hover:text-neutral-800",
