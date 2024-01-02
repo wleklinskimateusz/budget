@@ -3,7 +3,7 @@
 import { twMerge } from "tailwind-merge";
 import { NavItem } from "./ui/NavItem";
 import { usePathname } from "next/navigation";
-import { ComponentProps, useEffect, useState } from "react";
+import { ComponentProps } from "react";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -21,7 +21,7 @@ type NavProps = {
 const links = [
   { href: "/", icon: "20-view-dashboard", children: "Dashboard" },
   { href: "/categories", icon: "20-card", children: "Categories" },
-] as const satisfies ComponentProps<typeof NavItem>[];
+] as const satisfies readonly ComponentProps<typeof NavItem>[];
 
 export const Nav = ({ className }: NavProps) => {
   const active = useActive();
