@@ -4,6 +4,15 @@ import { twMerge } from "tailwind-merge";
 import { NavItem } from "./ui/NavItem";
 import { usePathname } from "next/navigation";
 import { ComponentProps, useEffect, useState } from "react";
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  navigationMenuTriggerStyle,
+} from "./ui/navigation-menu";
+import Link from "next/link";
+import { Icon } from "@virtuslab/tetrisly-icons";
 
 type NavProps = {
   className?: string;
@@ -17,20 +26,26 @@ const links = [
 export const Nav = ({ className }: NavProps) => {
   const active = useActive();
   return (
-    <nav className={twMerge("basis-40 bg-neutral-100 shadow py-10", className)}>
-      <ul className="flex flex-col">
+    <NavigationMenu
+      orientation="vertical"
+      className={twMerge("shadow items-start", className)}
+    >
+      <NavigationMenuList className="flex flex-col">
         {links.map((link) => (
-          <NavItem
-            key={link.href}
-            href={link.href}
-            icon={link.icon}
-            active={active === link.href}
-          >
-            {link.children}
-          </NavItem>
+          <NavigationMenuItem key={link.href}>
+            <Link href={link.href} passHref legacyBehavior>
+              <NavigationMenuLink
+                active={active === link.href}
+                className={twMerge(navigationMenuTriggerStyle(), "flex gap-2")}
+              >
+                <Icon name={link.icon} />
+                {link.children}
+              </NavigationMenuLink>
+            </Link>
+          </NavigationMenuItem>
         ))}
-      </ul>
-    </nav>
+      </NavigationMenuList>
+    </NavigationMenu>
   );
 };
 
