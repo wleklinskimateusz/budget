@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ClerkProvider } from "@clerk/nextjs";
+import { ClerkProvider, UserButton } from "@clerk/nextjs";
 import { twMerge } from "tailwind-merge";
+import { Nav } from "@/components/Nav";
+
+import { AvatarButton } from "@/components/AvatarButton";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,7 +23,14 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={twMerge(inter.className)}>{children}</body>
+        <body className={twMerge(inter.className, "flex")}>
+          <Nav />
+          <main className="min-h-screen">{children}</main>
+          <div className="fixed top-5 right-5">
+            <AvatarButton />
+          </div>
+          <Toaster />
+        </body>
       </html>
     </ClerkProvider>
   );

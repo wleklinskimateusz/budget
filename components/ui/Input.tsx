@@ -1,30 +1,25 @@
-import { InputHTMLAttributes, forwardRef } from "react";
-import { twMerge } from "tailwind-merge";
+import * as React from "react"
 
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  label?: string;
-  error?: string | boolean;
-}
+import { cn } from "@/lib/utils"
 
-export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ name, label, error, required, id, ...rest }, ref) => (
-    <div className={twMerge("flex flex-col", error && "text-red-600")}>
-      <label className="text-bold" htmlFor={id}>
-        {label}: {required && <span aria-label="required">*</span>}
-      </label>
+export interface InputProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {}
+
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ className, type, ...props }, ref) => {
+    return (
       <input
+        type={type}
+        className={cn(
+          "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
+          className
+        )}
         ref={ref}
-        aria-invalid={Boolean(error)}
-        className={twMerge("rounded text-black", error && "border-red-600")}
-        id={id}
-        type="text"
-        name={name}
-        required={required}
-        {...rest}
+        {...props}
       />
-      {error && <span className="text-sm">{error}</span>}
-    </div>
-  )
-);
+    )
+  }
+)
+Input.displayName = "Input"
 
-Input.displayName = "Input";
+export { Input }
