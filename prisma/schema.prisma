@@ -8,17 +8,56 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
-model Categories {
-  id            Int             @id @default(autoincrement())
-  name          String
-  userId        String
-  SubCategories SubCategories[]
+model User {
+  id         String      @id @default(cuid())
+  email      String      @unique
+  name       String?
+  portfolios Portfolio[]
+  Budget     Budget?
 }
 
-model SubCategories {
-  id         Int    @id @default(autoincrement())
-  name       String
-  categoryId Int
+model Budget {
+  id             String           @id @default(cuid())
+  name           String
+  description    String?
+  goal           Float?
+  userId         String           @unique
+  user           User             @relation(fields: [userId], references: [id])
+  BudgetCategory BudgetCategory[]
+}
 
-  category Categories @relation(fields: [categoryId], references: [id])
+enum BudgetCategoryType {
+  INCOME
+  NECESSITY
+  SAVINGS
+  WANTS
+  GIFTS
+}
+
+model BudgetCategory {
+  id       String             @id @default(cuid())
+  name     String
+  budgetId String
+  type     BudgetCategoryType
+  budget   Budget             @relation(fields: [budgetId], references: [id])
+  goal     Float?
+}
+
+model Portfolio {
+  id             String           @id @default(cuid())
+  name           String
+  description    String?
+  goal           Float?
+  userId         String
+  user           User             @relation(fields: [userId], references: [id])
+  PortfolioAsset PortfolioAsset[]
+}
+
+model PortfolioAsset {
+  id             String    @id @default(cuid())
+  name           String
+  description    String?
+  percentageGoal Float?
+  portfolioId    String
+  portfolio      Portfolio @relation(fields: [portfolioId], references: [id])
 }
