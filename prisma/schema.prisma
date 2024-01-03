@@ -43,11 +43,19 @@ model BudgetCategory {
   goal     Float?
 }
 
+enum PortfolioType {
+  EMERGENCY
+  SAVINGS
+  RETIREMENT
+  RISK
+}
+
 model Portfolio {
   id             String           @id @default(cuid())
   name           String
   description    String?
   goal           Float?
+  type           PortfolioType
   userId         String
   user           User             @relation(fields: [userId], references: [id])
   PortfolioAsset PortfolioAsset[]
