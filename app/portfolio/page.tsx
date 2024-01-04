@@ -1,34 +1,21 @@
-import { Card } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { currentUser } from "@clerk/nextjs";
+import { PortfolioTable } from "./_components/PortfolioTable";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 
-export default function PortfolioPage() {
+export default async function PortfolioPage() {
+  const user = await currentUser();
+  if (!user) {
+    return null;
+  }
+
   return (
-    <Card>
-      <Table>
-        <TableCaption>A list of your recent invoices.</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Description</TableHead>
-            <TableHead className="text-right">Total Assets</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <TableRow>
-            <TableCell className="font-medium">Emergency Fund</TableCell>
-            <TableCell>Paid</TableCell>
-            <TableCell className="text-right">$250.00</TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-    </Card>
+    <div className="grid w-full flex-grow grid-cols-3 gap-4 p-2">
+      <PortfolioTable userId={user.id} />
+      <Card>
+        <CardHeader>
+          <CardTitle>Future Graphs</CardTitle>
+        </CardHeader>
+      </Card>
+    </div>
   );
 }

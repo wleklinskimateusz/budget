@@ -23,12 +23,12 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={twMerge(inter.className, "flex")}>
-          <div className="flex h-screen flex-col items-center justify-between shadow-lg">
+        <body className={twMerge(inter.className, "flex  ")}>
+          <div className="flex h-screen flex-col items-center justify-between py-4 shadow-lg">
             <Nav />
             <AvatarButton />
           </div>
-          <main className="min-h-screen">{children}</main>
+          <main className="min-h-screen w-full flex-grow">{children}</main>
           <div className="fixed right-5 top-5"></div>
           <Toaster />
         </body>

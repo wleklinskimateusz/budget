@@ -8,21 +8,12 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
-model User {
-  id         String      @id @default(cuid())
-  email      String      @unique
-  name       String?
-  portfolios Portfolio[]
-  Budget     Budget?
-}
-
 model Budget {
   id             String           @id @default(cuid())
   name           String
   description    String?
   goal           Float?
   userId         String           @unique
-  user           User             @relation(fields: [userId], references: [id])
   BudgetCategory BudgetCategory[]
 }
 
@@ -57,15 +48,23 @@ model Portfolio {
   goal           Float?
   type           PortfolioType
   userId         String
-  user           User             @relation(fields: [userId], references: [id])
   PortfolioAsset PortfolioAsset[]
 }
 
 model PortfolioAsset {
-  id             String    @id @default(cuid())
+  id             String       @id @default(cuid())
   name           String
   description    String?
   percentageGoal Float?
   portfolioId    String
-  portfolio      Portfolio @relation(fields: [portfolioId], references: [id])
+  portfolio      Portfolio    @relation(fields: [portfolioId], references: [id])
+  AssetValue     AssetValue[]
+}
+
+model AssetValue {
+  id               String         @id @default(cuid())
+  value            Float
+  date             DateTime
+  portfolioAsset   PortfolioAsset @relation(fields: [portfolioAssetId], references: [id])
+  portfolioAssetId String
 }
