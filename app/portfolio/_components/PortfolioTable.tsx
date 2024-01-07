@@ -20,7 +20,7 @@ export async function PortfolioTable({ userId }: { userId: string }) {
     },
   });
   return (
-    <Card className=" col-span-2">
+    <Card className="col-span-2">
       <CardContent>
         <Table>
           <TableCaption></TableCaption>

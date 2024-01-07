@@ -7,6 +7,7 @@ import { Nav } from "@/components/Nav";
 
 import { AvatarButton } from "@/components/AvatarButton";
 import { Toaster } from "@/components/ui/sonner";
+import { Header } from "@/components/Header";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,12 +24,15 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={twMerge(inter.className, "flex  ")}>
+        <body className={twMerge(inter.className, "flex h-screen w-screen")}>
           <div className="flex h-screen flex-col items-center justify-between py-4 shadow-lg">
             <Nav />
             <AvatarButton />
           </div>
-          <main className="min-h-screen w-full flex-grow">{children}</main>
+          <div className="flex flex-grow flex-col">
+            <Header />
+            <main className="w-full flex-grow overflow-y-auto">{children}</main>
+          </div>
           <div className="fixed right-5 top-5"></div>
           <Toaster />
         </body>

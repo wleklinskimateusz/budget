@@ -4,9 +4,11 @@ import { twMerge } from "tailwind-merge";
 import { ComponentProps, ReactNode } from "react";
 import {
   NavigationMenu,
+  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
+  NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "./ui/navigation-menu";
 import Link from "next/link";
@@ -28,9 +30,13 @@ export const Nav = ({ className }: NavProps) => {
       className={twMerge(" items-start", className)}
     >
       <NavigationMenuList className="w-36  flex-col">
-        {links.map((link) => (
-          <NavItem key={link.href} {...link} />
-        ))}
+        <NavItem href="/" icon="20-view-dashboard">
+          Dashboard
+        </NavItem>
+        <NavItem href="/portfolio" icon="20-wallet">
+          Portfolio
+        </NavItem>
+        <NavDashoardItem />
       </NavigationMenuList>
     </NavigationMenu>
   );
@@ -57,5 +63,16 @@ const NavItem = ({
         <Icon name={icon} />
       </NavigationMenuLink>
     </Link>
+  </NavigationMenuItem>
+);
+
+const NavDashoardItem = () => (
+  <NavigationMenuItem className="relative w-full flex-1">
+    <NavigationMenuTrigger className="w-full">Assets</NavigationMenuTrigger>
+    <NavigationMenuContent className="absolute top-full w-full">
+      <NavItem href="/tbond" icon="20-wallet">
+        Tbonds
+      </NavItem>
+    </NavigationMenuContent>
   </NavigationMenuItem>
 );
