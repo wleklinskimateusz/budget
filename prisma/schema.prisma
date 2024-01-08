@@ -38,7 +38,7 @@ enum PortfolioType {
   EMERGENCY
   SAVINGS
   RETIREMENT
-  RISK
+  WEALTH
 }
 
 model Portfolio {

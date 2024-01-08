@@ -1,4 +1,4 @@
-import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
   TableCaption,
@@ -9,16 +9,26 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import prisma from "@/prisma/client";
+import { unstable_cache as cache } from "next/cache";
 
 export async function PortfolioTable({ userId }: { userId: string }) {
-  const portfolios = await prisma.portfolio.findMany({
-    where: { userId },
-    include: {
-      PortfolioAsset: {
-        include: { AssetValue: true },
-      },
+  const getPortfolios = cache(
+    async () => {
+      return await prisma.portfolio.findMany({
+        where: { userId },
+        include: {
+          PortfolioAsset: {
+            include: { AssetValue: true },
+          },
+        },
+      });
     },
-  });
+    ["portfolios", userId],
+    { tags: [userId, "portfolios"] },
+  );
+
+  const portfolios = await getPortfolios();
+
   return (
     <Card className="col-span-2">
       <CardContent>
@@ -40,16 +50,7 @@ export async function PortfolioTable({ userId }: { userId: string }) {
                 <TableCell>{portfolio.type}</TableCell>
                 <TableCell>{portfolio.description}</TableCell>
                 <TableCell>{portfolio.goal}</TableCell>
-                <TableCell>
-                  {portfolio.PortfolioAsset.reduce(
-                    (acc, asset) =>
-                      acc +
-                      asset.AssetValue.sort(
-                        (a, b) => a.date.getTime() - b.date.getTime(),
-                      )[0].value,
-                    0,
-                  )}
-                </TableCell>
+                <TableCell>0$</TableCell>
               </TableRow>
             ))}
           </TableBody>

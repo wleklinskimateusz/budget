@@ -27,30 +27,41 @@ export const Nav = ({ className }: NavProps) => {
   return (
     <NavigationMenu
       orientation="vertical"
-      className={twMerge(" items-start", className)}
+      className={twMerge("items-start", className)}
     >
-      <NavigationMenuList className="w-36  flex-col">
+      <NavigationMenuList className="w-48  flex-col">
         <NavItem href="/" icon="20-view-dashboard">
           Dashboard
+        </NavItem>
+        <NavItem href="/budget" icon="20-wallet">
+          Budget
         </NavItem>
         <NavItem href="/portfolio" icon="20-wallet">
           Portfolio
         </NavItem>
-        <NavDashoardItem />
+        <NavDashoardItem
+          groupName="Assets"
+          items={[
+            { href: "/assets/tbond", icon: "20-wallet", children: "Tbonds" },
+            {
+              href: "/assets/account",
+              icon: "20-wallet",
+              children: "Savings account",
+            },
+          ]}
+        />
       </NavigationMenuList>
     </NavigationMenu>
   );
 };
 
-const NavItem = ({
-  href,
-  children,
-  icon,
-}: {
+type NavItemProps = {
   href: string;
-  children: ReactNode;
   icon: IconName;
-}) => (
+  children: ReactNode;
+};
+
+const NavItem = ({ href, children, icon }: NavItemProps) => (
   <NavigationMenuItem className="w-full flex-grow">
     <Link href={href} legacyBehavior passHref>
       <NavigationMenuLink
@@ -66,13 +77,21 @@ const NavItem = ({
   </NavigationMenuItem>
 );
 
-const NavDashoardItem = () => (
+const NavDashoardItem = ({
+  groupName,
+  items,
+}: {
+  groupName: string;
+  items: NavItemProps[];
+}) => (
   <NavigationMenuItem className="relative w-full flex-1">
-    <NavigationMenuTrigger className="w-full">Assets</NavigationMenuTrigger>
-    <NavigationMenuContent className="absolute top-full w-full">
-      <NavItem href="/tbond" icon="20-wallet">
-        Tbonds
-      </NavItem>
+    <NavigationMenuTrigger className="flex w-full justify-between">
+      {groupName}
+    </NavigationMenuTrigger>
+    <NavigationMenuContent className="absolute left-1 right-1 top-full w-full flex-grow shadow">
+      {items.map((props) => (
+        <NavItem key={props.href} {...props} />
+      ))}
     </NavigationMenuContent>
   </NavigationMenuItem>
 );
