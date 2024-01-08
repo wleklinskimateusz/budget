@@ -1,3 +1,5 @@
+"use client";
+
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
@@ -8,27 +10,22 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
-import prisma from "@/prisma/client";
-import { unstable_cache as cache } from "next/cache";
+import { getPortfolios } from "../_server/getPortfolios";
+import { useQuery } from "@tanstack/react-query";
 
-export async function PortfolioTable({ userId }: { userId: string }) {
-  const getPortfolios = cache(
-    async () => {
-      return await prisma.portfolio.findMany({
-        where: { userId },
-        include: {
-          PortfolioAsset: {
-            include: { AssetValue: true },
-          },
-        },
-      });
-    },
-    ["portfolios", userId],
-    { tags: [userId, "portfolios"] },
-  );
-
-  const portfolios = await getPortfolios();
-
+export function PortfolioTable({ userId }: { userId: string }) {
+  const {
+    data: portfolios,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["portfolios"],
+    initialData: [],
+    queryFn: async () => await getPortfolios(userId),
+  });
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error</div>;
+  if (!portfolios) return null;
   return (
     <Card className="col-span-2">
       <CardContent>

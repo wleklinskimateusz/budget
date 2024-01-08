@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ClerkProvider, UserButton } from "@clerk/nextjs";
+import { ClerkProvider } from "@clerk/nextjs";
 import { twMerge } from "tailwind-merge";
 import { Nav } from "@/components/Nav";
 
 import { AvatarButton } from "@/components/AvatarButton";
 import { Toaster } from "@/components/ui/sonner";
 import { Header } from "@/components/Header";
+import { Providers } from "@/components/Providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,20 +24,24 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang="en">
-        <body className={twMerge(inter.className, "flex h-screen w-screen")}>
-          <div className="flex h-screen flex-col items-center justify-between py-4 shadow-lg">
-            <Nav />
-            <AvatarButton />
-          </div>
-          <div className="flex flex-grow flex-col">
-            <Header />
-            <main className="w-full flex-grow overflow-y-auto">{children}</main>
-          </div>
-          <div className="fixed right-5 top-5"></div>
-          <Toaster />
-        </body>
-      </html>
+      <Providers>
+        <html lang="en">
+          <body className={twMerge(inter.className, "flex h-screen w-screen")}>
+            <div className="flex h-screen flex-col items-center justify-between py-4 shadow-lg">
+              <Nav />
+              <AvatarButton />
+            </div>
+            <div className="flex flex-grow flex-col">
+              <Header />
+              <main className="w-full flex-grow overflow-y-auto">
+                {children}
+              </main>
+            </div>
+            <div className="fixed right-5 top-5"></div>
+            <Toaster />
+          </body>
+        </html>
+      </Providers>
     </ClerkProvider>
   );
 }
