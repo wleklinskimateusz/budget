@@ -7,7 +7,6 @@ import { Nav } from "@/components/Nav";
 
 import { AvatarButton } from "@/components/AvatarButton";
 import { Toaster } from "@/components/ui/sonner";
-import { Header } from "@/components/Header";
 import { Providers } from "@/components/Providers";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -31,12 +30,7 @@ export default function RootLayout({
               <Nav />
               <AvatarButton />
             </div>
-            <div className="flex flex-grow flex-col">
-              <Header />
-              <main className="w-full flex-grow overflow-y-auto">
-                {children}
-              </main>
-            </div>
+            <div className="flex flex-grow flex-col">{children}</div>
             <div className="fixed right-5 top-5"></div>
             <Toaster />
           </body>

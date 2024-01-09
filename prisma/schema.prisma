@@ -4,8 +4,8 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
 model Budget {
@@ -17,28 +17,13 @@ model Budget {
   BudgetCategory BudgetCategory[]
 }
 
-enum BudgetCategoryType {
-  INCOME
-  NECESSITY
-  SAVINGS
-  WANTS
-  GIFTS
-}
-
 model BudgetCategory {
   id       String             @id @default(cuid())
   name     String
   budgetId String
   type     BudgetCategoryType
-  budget   Budget             @relation(fields: [budgetId], references: [id])
   goal     Float?
-}
-
-enum PortfolioType {
-  EMERGENCY
-  SAVINGS
-  RETIREMENT
-  WEALTH
+  budget   Budget             @relation(fields: [budgetId], references: [id])
 }
 
 model Portfolio {
@@ -46,8 +31,8 @@ model Portfolio {
   name           String
   description    String?
   goal           Float?
-  type           PortfolioType
   userId         String
+  type           PortfolioType
   PortfolioAsset PortfolioAsset[]
 }
 
@@ -57,14 +42,29 @@ model PortfolioAsset {
   description    String?
   percentageGoal Float?
   portfolioId    String
-  portfolio      Portfolio    @relation(fields: [portfolioId], references: [id])
   AssetValue     AssetValue[]
+  portfolio      Portfolio    @relation(fields: [portfolioId], references: [id])
 }
 
 model AssetValue {
   id               String         @id @default(cuid())
   value            Float
   date             DateTime
-  portfolioAsset   PortfolioAsset @relation(fields: [portfolioAssetId], references: [id])
   portfolioAssetId String
+  portfolioAsset   PortfolioAsset @relation(fields: [portfolioAssetId], references: [id])
+}
+
+enum BudgetCategoryType {
+  INCOME
+  NECESSITY
+  SAVINGS
+  WANTS
+  GIFTS
+}
+
+enum PortfolioType {
+  EMERGENCY
+  SAVINGS
+  RETIREMENT
+  RISK
 }
