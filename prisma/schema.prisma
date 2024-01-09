@@ -4,21 +4,67 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
-model Categories {
-  id            Int             @id @default(autoincrement())
-  name          String
-  userId        String
-  SubCategories SubCategories[]
+model Budget {
+  id             String           @id @default(cuid())
+  name           String
+  description    String?
+  goal           Float?
+  userId         String           @unique
+  BudgetCategory BudgetCategory[]
 }
 
-model SubCategories {
-  id         Int    @id @default(autoincrement())
-  name       String
-  categoryId Int
+model BudgetCategory {
+  id       String             @id @default(cuid())
+  name     String
+  budgetId String
+  type     BudgetCategoryType
+  goal     Float?
+  budget   Budget             @relation(fields: [budgetId], references: [id])
+}
 
-  category Categories @relation(fields: [categoryId], references: [id])
+model Portfolio {
+  id             String           @id @default(cuid())
+  name           String
+  description    String?
+  goal           Float?
+  userId         String
+  type           PortfolioType
+  PortfolioAsset PortfolioAsset[]
+}
+
+model PortfolioAsset {
+  id             String       @id @default(cuid())
+  name           String
+  description    String?
+  percentageGoal Float?
+  portfolioId    String
+  AssetValue     AssetValue[]
+  portfolio      Portfolio    @relation(fields: [portfolioId], references: [id])
+}
+
+model AssetValue {
+  id               String         @id @default(cuid())
+  value            Float
+  date             DateTime
+  portfolioAssetId String
+  portfolioAsset   PortfolioAsset @relation(fields: [portfolioAssetId], references: [id])
+}
+
+enum BudgetCategoryType {
+  INCOME
+  NECESSITY
+  SAVINGS
+  WANTS
+  GIFTS
+}
+
+enum PortfolioType {
+  EMERGENCY
+  SAVINGS
+  RETIREMENT
+  RISK
 }
