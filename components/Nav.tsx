@@ -4,11 +4,9 @@ import { twMerge } from "tailwind-merge";
 import { ComponentProps, ReactNode } from "react";
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "./ui/navigation-menu";
 import Link from "next/link";
@@ -17,11 +15,6 @@ import { Icon, IconName } from "@virtuslab/tetrisly-icons";
 type NavProps = {
   className?: string;
 };
-
-const links = [
-  { href: "/", icon: "20-view-dashboard", children: "Dashboard" },
-  { href: "/portfolio", icon: "20-wallet", children: "Portfolio" },
-] as const satisfies readonly ComponentProps<typeof NavItem>[];
 
 export const Nav = ({ className }: NavProps) => {
   return (
@@ -39,17 +32,6 @@ export const Nav = ({ className }: NavProps) => {
         <NavItem href="/portfolio" icon="20-wallet">
           Portfolio
         </NavItem>
-        <NavDashoardItem
-          groupName="Assets"
-          items={[
-            { href: "/assets/tbond", icon: "20-wallet", children: "Tbonds" },
-            {
-              href: "/assets/account",
-              icon: "20-wallet",
-              children: "Savings account",
-            },
-          ]}
-        />
       </NavigationMenuList>
     </NavigationMenu>
   );
@@ -74,24 +56,5 @@ const NavItem = ({ href, children, icon }: NavItemProps) => (
         <Icon name={icon} />
       </NavigationMenuLink>
     </Link>
-  </NavigationMenuItem>
-);
-
-const NavDashoardItem = ({
-  groupName,
-  items,
-}: {
-  groupName: string;
-  items: NavItemProps[];
-}) => (
-  <NavigationMenuItem className="relative w-full flex-1">
-    <NavigationMenuTrigger className="flex w-full justify-between">
-      {groupName}
-    </NavigationMenuTrigger>
-    <NavigationMenuContent className="absolute left-1 right-1 top-full w-full flex-grow shadow">
-      {items.map((props) => (
-        <NavItem key={props.href} {...props} />
-      ))}
-    </NavigationMenuContent>
   </NavigationMenuItem>
 );

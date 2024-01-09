@@ -22,27 +22,34 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { PortfolioType } from "@prisma/client";
+import { Portfolio, PortfolioType } from "@prisma/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { addPortfolio } from "../_server/addPortfolio";
 import { useUser } from "@clerk/nextjs";
 import { toast } from "sonner";
+import { editPortfolio } from "../../_server/editPortfolio";
 
-export const AddPortfolioButton = () => {
+export const EditPortfolioButton = ({
+  id,
+  name,
+  description,
+  goal,
+  type,
+}: Omit<Portfolio, "userId">) => {
   const queryClient = useQueryClient();
   const { user } = useUser();
   const mutation = useMutation({
-    mutationFn: addPortfolio,
+    mutationFn: editPortfolio,
     onSettled: async () => {
-      return await queryClient.invalidateQueries({ queryKey: ["portfolio"] });
+      return await queryClient.invalidateQueries({
+        queryKey: ["portfolio", "portfolios"],
+      });
     },
-    onSuccess: () => {
-      toast("Portfolio added");
+    onSuccess: ({ name }) => {
+      toast(`Portfolio ${name} edited`);
     },
     onError: (error) => {
       toast(error.message);
     },
-    mutationKey: ["addPortfolio"],
   });
   if (!user) return null;
   if (mutation.status === "pending") return <div>Loading...</div>;
@@ -50,7 +57,7 @@ export const AddPortfolioButton = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>Add Portfolio</Button>
+        <Button>Edit Portfolio</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <form
@@ -67,7 +74,7 @@ export const AddPortfolioButton = () => {
               type: z.nativeEnum(PortfolioType),
             });
             const data = schema.parse(Object.fromEntries(formData.entries()));
-            mutation.mutate({ ...data, userId });
+            mutation.mutate({ ...data, userId, id });
           }}
         >
           <DialogHeader>
@@ -83,7 +90,13 @@ export const AddPortfolioButton = () => {
               <Label htmlFor="name" className="text-right">
                 Name
               </Label>
-              <Input required id="name" name="name" className="col-span-3" />
+              <Input
+                required
+                defaultValue={name}
+                id="name"
+                name="name"
+                className="col-span-3"
+              />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="description" className="text-right">
@@ -91,6 +104,7 @@ export const AddPortfolioButton = () => {
               </Label>
               <Textarea
                 id="description"
+                defaultValue={description ?? ""}
                 name="description"
                 className="col-span-3"
               />
@@ -101,6 +115,7 @@ export const AddPortfolioButton = () => {
               </Label>
               <Input
                 id="goal"
+                defaultValue={goal ?? ""}
                 name="goal"
                 type="number"
                 className="col-span-3"
@@ -110,7 +125,7 @@ export const AddPortfolioButton = () => {
               <Label htmlFor="goal" className="text-right">
                 Type
               </Label>
-              <Select required name="type">
+              <Select defaultValue={type} required name="type">
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Select a type" />
                 </SelectTrigger>

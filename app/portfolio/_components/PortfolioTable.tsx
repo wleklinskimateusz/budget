@@ -15,6 +15,7 @@ import { useMutationState, useQuery } from "@tanstack/react-query";
 import { Portfolio, PortfolioType } from "@prisma/client";
 import { z } from "zod";
 import { formatCurrency } from "@/lib/formatCurrency";
+import Link from "next/link";
 
 export function PortfolioTable({ userId }: { userId: string }) {
   const {
@@ -41,6 +42,7 @@ export function PortfolioTable({ userId }: { userId: string }) {
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error</div>;
   if (!portfolios) return null;
+  console.log(portfolios);
   return (
     <Card className="col-span-2">
       <CardContent>
@@ -73,14 +75,18 @@ const PortfolioTableRow = ({
   className,
   portfolio,
 }: {
-  portfolio?: Pick<Portfolio, "name" | "type" | "goal">;
+  portfolio?: Pick<Portfolio, "name" | "type" | "goal"> & {
+    id?: Portfolio["id"];
+  };
   className?: string;
 }) => {
   if (!portfolio) return null;
   const { name, type, goal } = portfolio;
   return (
     <TableRow className={className}>
-      <TableCell className="w-32 font-medium">{name}</TableCell>
+      <Link href={portfolio.id ? `/portfolio/${portfolio.id}` : ""}>
+        <TableCell className="w-32 font-medium">{name}</TableCell>
+      </Link>
       <TableCell>{type.toLocaleLowerCase()}</TableCell>
       <TableCell>{formatCurrency(goal, "PLN")}</TableCell>
       <TableCell>{formatCurrency(0, "PLN")}</TableCell>

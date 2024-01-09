@@ -4,7 +4,7 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Header } from "@/components/Header";
 import { AddPortfolioButton } from "./_components/AddPortfolioButton";
 
-export default async function PortfolioPage() {
+export default async function PortfoliosPage() {
   const user = await currentUser();
   if (!user) {
     return null;
