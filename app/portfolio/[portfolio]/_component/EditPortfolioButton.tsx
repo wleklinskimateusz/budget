@@ -46,7 +46,7 @@ export const EditPortfolioButton = ({
       });
     },
     onSuccess: ({ name }) => {
-      toast(`Portfolio ${name} edited`);
+      toast.success(`Portfolio ${name} edited`);
     },
     onError: (error) => {
       toast(error.message);

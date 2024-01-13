@@ -19,17 +19,11 @@ enum Language {
   EN
 }
 
-enum Theme {
-  LIGHT
-  DARK
-}
-
 model Settings {
   id       String   @id @default(cuid())
   userId   String   @unique
   currency Currency
   language Language
-  theme    Theme
 }
 
 model Budget {

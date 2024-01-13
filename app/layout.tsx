@@ -5,7 +5,6 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { twMerge } from "tailwind-merge";
 import { Nav } from "@/components/Nav";
 
-import { ProfileInfo } from "@/components/ProfileInfo";
 import { Toaster } from "@/components/ui/sonner";
 import { Providers } from "@/components/Providers";
 
