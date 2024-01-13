@@ -31,10 +31,10 @@ export const DeletePortfolioButton = ({ id }: Pick<Portfolio, "id">) => {
       });
     },
     onSuccess: () => {
-      toast(`Portfolio deleted`);
+      toast.success(`Portfolio deleted`);
     },
     onError: (error) => {
-      toast(error.message);
+      toast.error(error.message);
     },
   });
 

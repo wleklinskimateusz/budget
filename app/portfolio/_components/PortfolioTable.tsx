@@ -25,7 +25,7 @@ export function PortfolioTable({ userId }: { userId: string }) {
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["portfolios"],
+    queryKey: ["portfolio", "portfolios"],
     queryFn: async () => await getPortfolios(userId),
   });
   const variables = useMutationState({

@@ -26,28 +26,31 @@ import { PortfolioType } from "@prisma/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addPortfolio } from "../_server/addPortfolio";
 import { useUser } from "@clerk/nextjs";
+import { useState } from "react";
 import { toast } from "sonner";
-import { Skeleton } from "@/components/ui/skeleton";
 
 export const AddPortfolioButton = () => {
+  const [isOpen, setIsOpen] = useState(false);
   const queryClient = useQueryClient();
   const { user, isLoaded } = useUser();
   const mutation = useMutation({
     mutationFn: addPortfolio,
     onSettled: async () => {
-      return await queryClient.invalidateQueries({ queryKey: ["portfolio"] });
+      return await queryClient.invalidateQueries({
+        queryKey: ["portfolio", "portfolios"],
+      });
     },
     onSuccess: () => {
-      toast("Portfolio added");
+      toast.success("Portfolio added");
     },
     onError: (error) => {
-      toast(error.message);
+      toast.error(error.message);
     },
     mutationKey: ["addPortfolio"],
   });
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button disabled={!isLoaded || mutation.status === "pending"}>
           Add Portfolio
@@ -70,6 +73,7 @@ export const AddPortfolioButton = () => {
             });
             const data = schema.parse(Object.fromEntries(formData.entries()));
             mutation.mutate({ ...data, userId });
+            setIsOpen(false);
           }}
         >
           <DialogHeader>

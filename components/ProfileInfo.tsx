@@ -7,6 +7,7 @@ import { Button } from "./ui/Button";
 import { Dialog, DialogTrigger } from "./ui/dialog";
 import { Settings } from "./settings";
 import { Skeleton } from "./ui/skeleton";
+import { useState } from "react";
 
 export const ProfileInfo = () => {
   const { user, isLoaded } = useUser();
@@ -19,15 +20,8 @@ export const ProfileInfo = () => {
         <UserAvatar user={user} isLoaded={isLoaded} />
         <UserWelcome user={user} isLoaded={isLoaded} />
       </div>
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button disabled={!isLoaded} className="w-full" variant="outline">
-            <Icon name="20-settings" className="mr-2 h-5 w-5" />
-            Settings
-          </Button>
-        </DialogTrigger>
-        <Settings />
-      </Dialog>
+      <SettingsButton user={user} isLoaded={isLoaded} />
+
       <Button
         className="w-full"
         variant="destructive"
@@ -56,6 +50,29 @@ function UserAvatar({ user, isLoaded }: UseUserReturn) {
       <AvatarFallback>{initials}</AvatarFallback>
     </Avatar>
   );
+}
+
+function SettingsButton({ isLoaded, user }: UseUserReturn) {
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  return (
+    <Dialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
+      <DialogTrigger asChild>
+        <Button disabled={!isLoaded} className="w-full" variant="outline">
+          <Icon name="20-settings" className="mr-2 h-5 w-5" />
+          Settings
+        </Button>
+      </DialogTrigger>
+      <SettingsDialog user={user} setIsOpen={setIsSettingsOpen} />
+    </Dialog>
+  );
+}
+
+function SettingsDialog({
+  user,
+  setIsOpen,
+}: Pick<UseUserReturn, "user"> & { setIsOpen: (isOpen: boolean) => void }) {
+  if (!user) return null;
+  return <Settings setIsOpen={setIsOpen} userId={user.id} />;
 }
 
 function UserWelcome({ user, isLoaded }: UseUserReturn) {
