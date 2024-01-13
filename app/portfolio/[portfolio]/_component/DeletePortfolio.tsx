@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { redirect } from "next/navigation";
 import { deletePortfolio } from "../../_server/deletePortfolio";
 import { useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const DeletePortfolioButton = ({ id }: Pick<Portfolio, "id">) => {
   const queryClient = useQueryClient();
@@ -37,12 +38,12 @@ export const DeletePortfolioButton = ({ id }: Pick<Portfolio, "id">) => {
     },
   });
 
-  if (mutation.status === "pending") return <div>Loading...</div>;
-
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="destructive">Delete Portfolio</Button>
+        <Button disabled={mutation.status === "pending"} variant="destructive">
+          Delete Portfolio
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <form action={() => mutation.mutate()}>

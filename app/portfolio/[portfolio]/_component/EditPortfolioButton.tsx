@@ -27,6 +27,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useUser } from "@clerk/nextjs";
 import { toast } from "sonner";
 import { editPortfolio } from "../../_server/editPortfolio";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const EditPortfolioButton = ({
   id,
@@ -36,7 +37,7 @@ export const EditPortfolioButton = ({
   type,
 }: Omit<Portfolio, "userId">) => {
   const queryClient = useQueryClient();
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
   const mutation = useMutation({
     mutationFn: editPortfolio,
     onSettled: async () => {
@@ -51,6 +52,7 @@ export const EditPortfolioButton = ({
       toast(error.message);
     },
   });
+  if (!isLoaded) return <Skeleton className="h-9 w-32" />;
   if (!user) return null;
   if (mutation.status === "pending") return <div>Loading...</div>;
 
@@ -78,7 +80,7 @@ export const EditPortfolioButton = ({
           }}
         >
           <DialogHeader>
-            <DialogTitle>Add Portfolio</DialogTitle>
+            <DialogTitle>Edit Portfolio</DialogTitle>
             <DialogDescription>
               Add a new Portfolio of Assets. It's a defined group of assets that
               behave a certain way (for example emergency fund or retirement).

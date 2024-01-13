@@ -1,15 +1,20 @@
 import { ReactNode } from "react";
+import { Button } from "./ui/Button";
 
 type HeaderProps = {
   title: string;
   action?: ReactNode;
+  additionalInfo?: ReactNode;
 };
 
-export const Header = ({ title, action }: HeaderProps) => {
+export const Header = ({ title, action, additionalInfo }: HeaderProps) => {
   return (
-    <header className="flex items-center justify-between bg-slate-50 p-4 shadow">
-      <h1 className="text-lg font-medium">{title}</h1>
-      {action}
+    <header className="shadow-b min- min-h-16 flex h-16 items-center justify-between border-b bg-gray-100/40 px-4 py-2 text-black dark:bg-gray-800/40">
+      <div className="flex-1 text-center">
+        <h1 className="text-2xl font-bold">{title}</h1>
+      </div>
+      {additionalInfo}
+      <div className="flex flex-1 justify-end">{action}</div>
     </header>
   );
 };

@@ -16,6 +16,8 @@ import { Portfolio, PortfolioType } from "@prisma/client";
 import { z } from "zod";
 import { formatCurrency } from "@/lib/formatCurrency";
 import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function PortfolioTable({ userId }: { userId: string }) {
   const {
@@ -24,7 +26,6 @@ export function PortfolioTable({ userId }: { userId: string }) {
     isError,
   } = useQuery({
     queryKey: ["portfolios"],
-    initialData: [],
     queryFn: async () => await getPortfolios(userId),
   });
   const variables = useMutationState({
@@ -39,9 +40,8 @@ export function PortfolioTable({ userId }: { userId: string }) {
   });
   const data = schema.safeParse(variables[0]);
   const optimisticData = data.success ? data.data : undefined;
-  if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error</div>;
-  if (!portfolios) return null;
+  if (!portfolios && !isLoading) return null;
   console.log(portfolios);
   return (
     <Card className="col-span-2">
@@ -57,7 +57,23 @@ export function PortfolioTable({ userId }: { userId: string }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {portfolios.map((portfolio) => (
+            {isLoading && (
+              <TableRow>
+                <TableCell className="h-4">
+                  <Skeleton className="h-4" />
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="h-4" />
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="h-4" />
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="h-4" />
+                </TableCell>
+              </TableRow>
+            )}
+            {portfolios?.map((portfolio) => (
               <PortfolioTableRow key={portfolio.id} portfolio={portfolio} />
             ))}
             <PortfolioTableRow
@@ -84,10 +100,14 @@ const PortfolioTableRow = ({
   const { name, type, goal } = portfolio;
   return (
     <TableRow className={className}>
-      <Link href={portfolio.id ? `/portfolio/${portfolio.id}` : ""}>
-        <TableCell className="w-32 font-medium">{name}</TableCell>
-      </Link>
-      <TableCell>{type.toLocaleLowerCase()}</TableCell>
+      <TableCell className=" font-medium">
+        <Link href={portfolio.id ? `/portfolio/${portfolio.id}` : ""}>
+          {name}
+        </Link>
+      </TableCell>
+      <TableCell>
+        <Badge>{type.toLocaleLowerCase()}</Badge>
+      </TableCell>
       <TableCell>{formatCurrency(goal, "PLN")}</TableCell>
       <TableCell>{formatCurrency(0, "PLN")}</TableCell>
     </TableRow>

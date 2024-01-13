@@ -27,10 +27,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addPortfolio } from "../_server/addPortfolio";
 import { useUser } from "@clerk/nextjs";
 import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const AddPortfolioButton = () => {
   const queryClient = useQueryClient();
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
   const mutation = useMutation({
     mutationFn: addPortfolio,
     onSettled: async () => {
@@ -44,17 +45,18 @@ export const AddPortfolioButton = () => {
     },
     mutationKey: ["addPortfolio"],
   });
-  if (!user) return null;
-  if (mutation.status === "pending") return <div>Loading...</div>;
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>Add Portfolio</Button>
+        <Button disabled={!isLoaded || mutation.status === "pending"}>
+          Add Portfolio
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <form
           action={(formData) => {
+            if (!user) return null;
             const userId = user.id;
             const schema = z.object({
               name: z.string(),
