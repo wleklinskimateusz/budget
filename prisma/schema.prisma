@@ -8,6 +8,30 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
+enum Currency {
+  PLN
+  EUR
+  USD
+}
+
+enum Language {
+  PL
+  EN
+}
+
+enum Theme {
+  LIGHT
+  DARK
+}
+
+model Settings {
+  id       String   @id @default(cuid())
+  userId   String   @unique
+  currency Currency
+  language Language
+  theme    Theme
+}
+
 model Budget {
   id             String           @id @default(cuid())
   name           String
@@ -67,4 +91,6 @@ enum PortfolioType {
   SAVINGS
   RETIREMENT
   RISK
+  WEALTH
+  OTHER
 }
