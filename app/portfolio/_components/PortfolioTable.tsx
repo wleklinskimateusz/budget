@@ -108,8 +108,14 @@ const PortfolioTableRow = ({
       <TableCell>
         <Badge>{type.toLocaleLowerCase()}</Badge>
       </TableCell>
-      <TableCell>{formatCurrency(goal, "PLN")}</TableCell>
+      <GoalCell goal={goal} />
       <TableCell>{formatCurrency(0, "PLN")}</TableCell>
     </TableRow>
   );
+};
+
+const GoalCell = ({ goal }: { goal: number | null }) => {
+  if (goal === null || goal === 0)
+    return <TableCell>Sky is the limit</TableCell>;
+  return <TableCell>{formatCurrency(goal, "PLN")}</TableCell>;
 };

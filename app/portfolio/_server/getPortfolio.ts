@@ -6,11 +6,6 @@ import { Portfolio } from "@prisma/client";
 export async function getPortfolio(id: Portfolio["id"]) {
   const result = await prisma.portfolio.findUnique({
     where: { id },
-    include: {
-      PortfolioAsset: {
-        include: { AssetValue: true },
-      },
-    },
   });
   return result;
 }

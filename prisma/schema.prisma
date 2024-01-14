@@ -45,31 +45,53 @@ model BudgetCategory {
 }
 
 model Portfolio {
-  id             String           @id @default(cuid())
-  name           String
-  description    String?
-  goal           Float?
-  userId         String
-  type           PortfolioType
-  PortfolioAsset PortfolioAsset[]
+  id          String        @id @default(cuid())
+  name        String
+  description String?
+  goal        Float?
+  userId      String
+  type        PortfolioType
+
+  PortfolioStructureItem PortfolioStructureItem[]
 }
 
-model PortfolioAsset {
-  id             String       @id @default(cuid())
-  name           String
-  description    String?
-  percentageGoal Float?
-  portfolioId    String
-  AssetValue     AssetValue[]
-  portfolio      Portfolio    @relation(fields: [portfolioId], references: [id])
+model PortfolioStructureItem {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  goal        Float?
+  portfolioId String
+  portfolio   Portfolio @relation(fields: [portfolioId], references: [id])
+  Asset       Asset[]
+}
+
+model Asset {
+  id   String                 @id @default(cuid())
+  name String
+  type PortfolioStructureItem @relation(fields: [portfolioStructureItemId], references: [id])
+
+  portfolioStructureItemId String
+  AssetDeposit             AssetDeposit[]
+  AssetValue               AssetValue[]
+}
+
+model AssetDeposit {
+  id     String   @id @default(cuid())
+  name   String
+  amount Float
+  time   DateTime
+  asset  Asset    @relation(fields: [assetId], references: [id])
+
+  assetId String
 }
 
 model AssetValue {
-  id               String         @id @default(cuid())
-  value            Float
-  date             DateTime
-  portfolioAssetId String
-  portfolioAsset   PortfolioAsset @relation(fields: [portfolioAssetId], references: [id])
+  id    String   @id @default(cuid())
+  value Float
+  time  DateTime
+  asset Asset    @relation(fields: [assetId], references: [id])
+
+  assetId String
 }
 
 enum BudgetCategoryType {
