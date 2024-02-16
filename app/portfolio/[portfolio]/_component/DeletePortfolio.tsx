@@ -13,30 +13,12 @@ import {
 import { Portfolio } from "@prisma/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { redirect } from "next/navigation";
 import { deletePortfolio } from "../../_server/deletePortfolio";
 import { useState } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
 
 export const DeletePortfolioButton = ({ id }: Pick<Portfolio, "id">) => {
-  const queryClient = useQueryClient();
-
+  const mutation = useDeleteMutation(id);
   const [isOpen, setIsOpen] = useState(false);
-
-  const mutation = useMutation({
-    mutationFn: () => deletePortfolio({ id }),
-    onSettled: async () => {
-      return await queryClient.invalidateQueries({
-        queryKey: ["portfolios"],
-      });
-    },
-    onSuccess: () => {
-      toast.success(`Portfolio deleted`);
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-  });
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -68,3 +50,22 @@ export const DeletePortfolioButton = ({ id }: Pick<Portfolio, "id">) => {
     </Dialog>
   );
 };
+
+function useDeleteMutation(id: Portfolio["id"]) {
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: () => deletePortfolio({ id }),
+    onSettled: async () => {
+      return await queryClient.invalidateQueries({
+        queryKey: ["portfolios"],
+      });
+    },
+    onSuccess: () => {
+      toast.success(`Portfolio deleted`);
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+  return mutation;
+}

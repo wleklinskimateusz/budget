@@ -36,25 +36,19 @@ export const EditPortfolioButton = ({
   goal,
   type,
 }: Omit<Portfolio, "userId">) => {
-  const queryClient = useQueryClient();
   const { user, isLoaded } = useUser();
-  const mutation = useMutation({
-    mutationFn: editPortfolio,
-    onSettled: async () => {
-      return await queryClient.invalidateQueries({
-        queryKey: ["portfolio", "portfolios"],
-      });
-    },
-    onSuccess: ({ name }) => {
-      toast.success(`Portfolio ${name} edited`);
-    },
-    onError: (error) => {
-      toast(error.message);
-    },
-  });
+  const mutation = useEditMutation();
+
   if (!isLoaded) return <Skeleton className="h-9 w-32" />;
   if (!user) return null;
   if (mutation.status === "pending") return <div>Loading...</div>;
+
+  const formAction = (formData: FormData) => {
+    const userId = user.id;
+
+    const data = formSchema.parse(Object.fromEntries(formData.entries()));
+    mutation.mutate({ ...data, userId, id });
+  };
 
   return (
     <Dialog>
@@ -62,23 +56,7 @@ export const EditPortfolioButton = ({
         <Button>Edit Portfolio</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
-        <form
-          action={(formData) => {
-            const userId = user.id;
-            const schema = z.object({
-              name: z.string(),
-              description: z.string().optional().transform(toNullable),
-              goal: z
-                .string()
-                .optional()
-                .transform(Number)
-                .transform(toNullable),
-              type: z.nativeEnum(PortfolioType),
-            });
-            const data = schema.parse(Object.fromEntries(formData.entries()));
-            mutation.mutate({ ...data, userId, id });
-          }}
-        >
+        <form action={formAction}>
           <DialogHeader>
             <DialogTitle>Edit Portfolio</DialogTitle>
             <DialogDescription>
@@ -152,7 +130,33 @@ export const EditPortfolioButton = ({
   );
 };
 
+const formSchema = z.object({
+  name: z.string(),
+  description: z.string().optional().transform(toNullable),
+  goal: z.string().optional().transform(Number).transform(toNullable),
+  type: z.nativeEnum(PortfolioType),
+});
+
 function toNullable<T>(value: T | undefined): T | null {
   if (value === undefined) return null;
   return value;
+}
+
+function useEditMutation() {
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: editPortfolio,
+    onSettled: async () => {
+      return await queryClient.invalidateQueries({
+        queryKey: ["portfolio", "portfolios"],
+      });
+    },
+    onSuccess: ({ name }) => {
+      toast.success(`Portfolio ${name} edited`);
+    },
+    onError: (error) => {
+      toast(error.message);
+    },
+  });
+  return mutation;
 }

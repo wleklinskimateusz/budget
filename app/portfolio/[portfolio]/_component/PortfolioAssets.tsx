@@ -27,8 +27,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { formatCurrency } from "@/lib/formatCurrency";
+import { Portfolio } from "@prisma/client";
 
-export function PortfolioAssets() {
+export function PortfolioAssets({ id }: Pick<Portfolio, "id">) {
   const assets = [
     {
       name: "Cash",

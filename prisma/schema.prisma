@@ -59,7 +59,7 @@ model PortfolioStructureItem {
   id          String    @id @default(cuid())
   name        String
   description String?
-  goal        Float?
+  goal        Float
   portfolioId String
   portfolio   Portfolio @relation(fields: [portfolioId], references: [id])
   Asset       Asset[]

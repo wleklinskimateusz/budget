@@ -28,21 +28,12 @@ export function PortfolioTable({ userId }: { userId: string }) {
     queryKey: ["portfolio", "portfolios"],
     queryFn: async () => await getPortfolios(userId),
   });
-  const variables = useMutationState({
-    filters: { mutationKey: ["addPortfolio"], status: "pending" },
-    select: (mutation) => mutation.state.variables,
-  });
-  const schema = z.object({
-    name: z.string(),
-    type: z.nativeEnum(PortfolioType),
-    description: z.string().nullable(),
-    goal: z.number().nullable(),
-  });
-  const data = schema.safeParse(variables[0]);
-  const optimisticData = data.success ? data.data : undefined;
+
+  const optimisticData = useOptimistic();
+
   if (isError) return <div>Error</div>;
   if (!portfolios && !isLoading) return null;
-  console.log(portfolios);
+
   return (
     <Card className="col-span-2">
       <CardContent>
@@ -57,22 +48,7 @@ export function PortfolioTable({ userId }: { userId: string }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {isLoading && (
-              <TableRow>
-                <TableCell className="h-4">
-                  <Skeleton className="h-4" />
-                </TableCell>
-                <TableCell>
-                  <Skeleton className="h-4" />
-                </TableCell>
-                <TableCell>
-                  <Skeleton className="h-4" />
-                </TableCell>
-                <TableCell>
-                  <Skeleton className="h-4" />
-                </TableCell>
-              </TableRow>
-            )}
+            <LoadingState isLoading={isLoading} />
             {portfolios?.map((portfolio) => (
               <PortfolioTableRow key={portfolio.id} portfolio={portfolio} />
             ))}
@@ -86,6 +62,43 @@ export function PortfolioTable({ userId }: { userId: string }) {
     </Card>
   );
 }
+
+const optimisticSchema = z.object({
+  name: z.string(),
+  type: z.nativeEnum(PortfolioType),
+  description: z.string().nullable(),
+  goal: z.number().nullable(),
+});
+
+function useOptimistic() {
+  const variables = useMutationState({
+    filters: { mutationKey: ["addPortfolio"], status: "pending" },
+    select: (mutation) => mutation.state.variables,
+  });
+
+  const data = optimisticSchema.safeParse(variables[0]);
+  return data.success ? data.data : undefined;
+}
+
+const LoadingState = ({ isLoading }: { isLoading: boolean }) => {
+  if (!isLoading) return null;
+  return (
+    <TableRow>
+      <TableCell className="h-4">
+        <Skeleton className="h-4" />
+      </TableCell>
+      <TableCell>
+        <Skeleton className="h-4" />
+      </TableCell>
+      <TableCell>
+        <Skeleton className="h-4" />
+      </TableCell>
+      <TableCell>
+        <Skeleton className="h-4" />
+      </TableCell>
+    </TableRow>
+  );
+};
 
 const PortfolioTableRow = ({
   className,
