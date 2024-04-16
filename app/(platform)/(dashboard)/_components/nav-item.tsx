@@ -61,7 +61,7 @@ export const NavItem = ({
   ] satisfies { label: string; Icon: LucideIcon; href: string }[];
 
   return (
-    <AccordionItem value={organization.id} className="border-none">
+    <AccordionItem value={organization.id} className="border-none px-2">
       <AccordionTrigger
         onClick={() => onExpand(organization.id)}
         className={cn(

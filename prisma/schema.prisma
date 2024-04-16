@@ -21,7 +21,7 @@ enum Language {
 
 model Settings {
   id       String   @id @default(cuid())
-  userId   String   @unique
+  orgId   String   @unique
   currency Currency
   language Language
 }

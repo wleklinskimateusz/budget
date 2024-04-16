@@ -1,19 +1,20 @@
+import { Branded } from "@/types/Branded";
+import { Currency } from "@prisma/client";
+
 const localeCurrency = {
   USD: "en-US",
   EUR: "de-DE",
   PLN: "pl-PL",
-} as Record<string, string>;
+} as const satisfies Record<Currency, string>;
+
+export type CurrencyString = Branded<string, "currency">;
 
 export function formatCurrency(
-  amount: number | null | undefined,
-  currency: string,
-  locale?: string,
+  amount: number,
+  currency: keyof typeof localeCurrency,
 ) {
-  if (amount === null || amount === undefined) {
-    return "";
-  }
-  return new Intl.NumberFormat(locale || localeCurrency[currency] || "en-US", {
+  return new Intl.NumberFormat(localeCurrency[currency], {
     style: "currency",
     currency: currency,
-  }).format(amount);
+  }).format(amount) as CurrencyString;
 }

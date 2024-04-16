@@ -48,9 +48,3 @@
     --ring: 20.5 90.2% 48.2%;
   }
 }
-
-@media (prefers-color-scheme: dark) {
-  body {
-    @apply dark;
-  }
-}
