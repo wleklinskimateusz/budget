@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, expectTypeOf, it } from "vitest";
 import { CurrencyString, formatCurrency } from "./formatCurrency";
 import { Equal, Expect } from "@/types/type-utils";
 
@@ -29,7 +29,7 @@ describe("formatCurrency", () => {
     const output = "100,00\xa0zł"; // non-breaking space
     const result = formatCurrency(amount, currency);
 
-    type test = Expect<Equal<typeof result, CurrencyString>>;
+    expectTypeOf(result).toEqualTypeOf<CurrencyString>();
     expect(result).toBe(output);
   });
 });

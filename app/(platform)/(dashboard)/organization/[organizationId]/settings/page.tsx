@@ -16,7 +16,7 @@ export default async function SettingsPage({
   );
   const settings = await fetchSettings();
   return (
-    <div className="mx-auto flex flex-col  justify-center gap-8">
+    <div className="mx-auto flex flex-col justify-center gap-8">
       <h1>Settings</h1>
       <SettingsForm
         orgId={organizationId}

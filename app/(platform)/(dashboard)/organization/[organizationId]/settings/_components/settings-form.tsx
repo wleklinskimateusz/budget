@@ -28,6 +28,7 @@ export const SettingsForm = ({
 }: SettingsFormProps) => {
   return (
     <form
+      data-testid="settings-form"
       className="flex flex-col gap-4"
       action={async (formData) => {
         try {
@@ -43,14 +44,18 @@ export const SettingsForm = ({
       <div>
         <Label>Default Currency</Label>
         <Select name="currency" defaultValue={currency}>
-          <SelectTrigger>
+          <SelectTrigger data-testid="currency-trigger">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
               <SelectLabel>Currency</SelectLabel>
               {Object.keys(Currency).map((currency) => (
-                <SelectItem key={currency} value={currency}>
+                <SelectItem
+                  data-testid={`currency-${currency}`}
+                  key={currency}
+                  value={currency}
+                >
                   {currency}
                 </SelectItem>
               ))}
