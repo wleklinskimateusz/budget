@@ -14,11 +14,12 @@ import { Currency, Language } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useFormStatus } from "react-dom";
+import { OrgId } from "@/types/Id";
 
 type SettingsFormProps = {
-  orgId: string;
-  currency: Currency | undefined;
-  language: Language | undefined;
+  orgId: OrgId;
+  currency: Currency | null;
+  language: Language | null;
 };
 
 export const SettingsForm = ({
@@ -42,7 +43,7 @@ export const SettingsForm = ({
     >
       <div>
         <Label>Default Currency</Label>
-        <Select name="currency" defaultValue={currency}>
+        <Select name="currency" defaultValue={currency ?? undefined}>
           <SelectTrigger>
             <SelectValue />
           </SelectTrigger>
@@ -60,7 +61,7 @@ export const SettingsForm = ({
       </div>
       <div>
         <Label>Language</Label>
-        <Select name="language" defaultValue={language}>
+        <Select name="language" defaultValue={language ?? undefined}>
           <SelectTrigger>
             <SelectValue />
           </SelectTrigger>

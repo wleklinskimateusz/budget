@@ -1,23 +1,31 @@
 "use server";
 
-import prisma from "@/lib/prisma";
+import { db } from "@/drizzle/db";
+import { settingsTable } from "@/drizzle/schema";
+import { OrgId } from "@/types/Id";
 import { Currency, Language } from "@prisma/client";
 import { revalidateTag } from "next/cache";
 
 export async function mutateSettings(
   formData: FormData,
-  organizationId: string,
+  organizationId: OrgId,
 ) {
   const currency = formData.get("currency");
   const language = formData.get("language");
   assertCurrency(currency);
   assertLanguage(language);
 
-  await prisma.settings.upsert({
-    where: { orgId: organizationId },
-    update: { currency, language },
-    create: { currency, language, orgId: organizationId },
-  });
+  await db
+    .insert(settingsTable)
+    .values({
+      orgId: organizationId,
+      currency,
+      language,
+    })
+    .onConflictDoUpdate({
+      target: settingsTable.orgId,
+      set: { orgId: organizationId },
+    });
   revalidateTag("settings_" + organizationId);
 }
 
