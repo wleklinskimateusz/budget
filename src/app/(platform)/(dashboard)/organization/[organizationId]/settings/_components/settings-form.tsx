@@ -1,6 +1,7 @@
 "use client";
 import { Label } from "@/components/ui/label";
-import { mutateSettings, upsertSettings } from "../_actions/mutateSettings";
+import { mutateSettings } from "../_actions/mutateSettings";
+import { upsertSettings } from "../_actions/upsertSettings";
 import {
   Select,
   SelectContent,
@@ -13,7 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useFormStatus } from "react-dom";
-import { OrgId } from "@/types/Id";
+import type { OrgId } from "@/types/Id";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { currencyValues, languageValues } from "@/drizzle/schema";
 

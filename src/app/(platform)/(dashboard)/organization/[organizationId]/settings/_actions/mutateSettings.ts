@@ -10,6 +10,7 @@ import {
 } from "@/drizzle/schema";
 import { OrgId } from "@/types/Id";
 import { revalidateTag } from "next/cache";
+import { upsertSettings } from "./upsertSettings";
 
 export async function mutateSettings(
   formData: FormData,
@@ -22,29 +23,6 @@ export async function mutateSettings(
   upsertSettings(organizationId, currency, language);
 
   revalidateTag("settings_" + organizationId);
-}
-
-export async function upsertSettings(
-  orgId: OrgId,
-  currency: Currency | undefined = undefined,
-  language: Language | undefined = undefined,
-) {
-  return await db
-    .insert(settingsTable)
-    .values({
-      orgId,
-      currency,
-      language,
-    })
-    .onConflictDoUpdate({
-      target: settingsTable.orgId,
-      set: { currency, language, orgId },
-    })
-    .returning({
-      language: settingsTable.language,
-      currency: settingsTable.currency,
-    })
-    .then((result) => result[0]);
 }
 
 function assertCurrency(currency: unknown): asserts currency is Currency {
