@@ -1,6 +1,6 @@
 "use client";
 import { Label } from "@/components/ui/label";
-import { mutateSettings } from "../_actions/mutateSettings";
+import { mutateSettings, upsertSettings } from "../_actions/mutateSettings";
 import {
   Select,
   SelectContent,
@@ -10,37 +10,37 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Currency, Language } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useFormStatus } from "react-dom";
 import { OrgId } from "@/types/Id";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { currencyValues, languageValues } from "@/drizzle/schema";
 
-type SettingsFormProps = {
-  orgId: OrgId;
-  currency: Currency | null;
-  language: Language | null;
-};
+export const SettingsForm = ({ orgId }: { orgId: OrgId }) => {
+  const { data: settings, refetch } = useQuery({
+    queryKey: ["settings", orgId],
+    queryFn: () => upsertSettings(orgId),
+  });
+  const mutation = useMutation({
+    mutationFn: (formData: FormData) => mutateSettings(formData, orgId),
+    onSuccess: () => {
+      toast.success("Settings saved");
+      refetch();
+    },
+    onError: (error) => {
+      console.error(error);
+      toast.error("Failed to save settings");
+    },
+  });
 
-export const SettingsForm = ({
-  orgId,
-  currency,
-  language,
-}: SettingsFormProps) => {
+  if (!settings) {
+    return <>Hello</>;
+  }
+  const { currency, language } = settings;
+
   return (
-    <form
-      className="flex flex-col gap-4"
-      action={async (formData) => {
-        try {
-          await mutateSettings(formData, orgId);
-          toast.success("Settings saved");
-          console.log("Settings saved");
-        } catch (error) {
-          console.error(error);
-          toast.error("Failed to save settings");
-        }
-      }}
-    >
+    <form className="flex flex-col gap-4" action={mutation.mutate}>
       <div>
         <Label>Default Currency</Label>
         <Select name="currency" defaultValue={currency ?? undefined}>
@@ -50,9 +50,9 @@ export const SettingsForm = ({
           <SelectContent>
             <SelectGroup>
               <SelectLabel>Currency</SelectLabel>
-              {Object.keys(Currency).map((currency) => (
-                <SelectItem key={currency} value={currency}>
-                  {currency}
+              {currencyValues.map((c) => (
+                <SelectItem key={c} value={c}>
+                  {c}
                 </SelectItem>
               ))}
             </SelectGroup>
@@ -68,9 +68,9 @@ export const SettingsForm = ({
           <SelectContent>
             <SelectGroup>
               <SelectLabel>Language</SelectLabel>
-              {Object.keys(Language).map((currency) => (
-                <SelectItem key={currency} value={currency}>
-                  {currency}
+              {languageValues.map((l) => (
+                <SelectItem key={l} value={l}>
+                  {l}
                 </SelectItem>
               ))}
             </SelectGroup>

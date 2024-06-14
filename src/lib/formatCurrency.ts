@@ -1,5 +1,5 @@
+import { Currency } from "@/drizzle/schema";
 import { Branded } from "@/types/Branded";
-import { Currency } from "@prisma/client";
 
 const localeCurrency = {
   USD: "en-US",

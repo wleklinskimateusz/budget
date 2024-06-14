@@ -1,4 +1,4 @@
-import { integer, pgEnum, pgTable, text } from "drizzle-orm/pg-core";
+import { pgEnum, pgTable, text } from "drizzle-orm/pg-core";
 import { OrgId } from "@/types/Id";
 
 export const currencyEnum = pgEnum("currency", ["PLN", "EUR", "USD"]);
@@ -9,3 +9,9 @@ export const settingsTable = pgTable("settings", {
   currency: currencyEnum("currency"),
   language: languageEnum("language"),
 });
+
+export const currencyValues = currencyEnum.enumValues;
+export const languageValues = languageEnum.enumValues;
+
+export type Currency = (typeof currencyEnum.enumValues)[number];
+export type Language = (typeof languageEnum.enumValues)[number];
