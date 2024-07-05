@@ -1,4 +1,4 @@
-import { Currency } from "@/drizzle/schema";
+import { Currency } from "@/drizzle/schema/settings";
 import { Branded } from "@/types/Branded";
 
 const localeCurrency = {

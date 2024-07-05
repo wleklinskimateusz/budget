@@ -1,7 +1,6 @@
 "use client";
 import { Label } from "@/components/ui/label";
 import { mutateSettings } from "../_actions/mutateSettings";
-import { upsertSettings } from "../_actions/upsertSettings";
 import {
   Select,
   SelectContent,
@@ -16,12 +15,14 @@ import { toast } from "sonner";
 import { useFormStatus } from "react-dom";
 import type { OrgId } from "@/types/Id";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { currencyValues, languageValues } from "@/drizzle/schema";
+import { currencyValues, languageValues } from "@/drizzle/schema/settings";
+import { getSettings } from "../_actions/getSettings";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const SettingsForm = ({ orgId }: { orgId: OrgId }) => {
   const { data: settings, refetch } = useQuery({
     queryKey: ["settings", orgId],
-    queryFn: () => upsertSettings(orgId),
+    queryFn: () => getSettings(orgId),
   });
   const mutation = useMutation({
     mutationFn: (formData: FormData) => mutateSettings(formData, orgId),
@@ -36,7 +37,19 @@ export const SettingsForm = ({ orgId }: { orgId: OrgId }) => {
   });
 
   if (!settings) {
-    return <>Hello</>;
+    return (
+      <div className="flex flex-col gap-4">
+        <div className="flex h-[60px] flex-col gap-1">
+          <Skeleton className="h-4 w-20" />
+          <Skeleton className="h-9" />
+        </div>
+        <div className="flex h-[60px] flex-col gap-1">
+          <Skeleton className="h-4 w-20" />
+          <Skeleton className="h-9" />
+        </div>
+        <Skeleton className="h-9" />
+      </div>
+    );
   }
   const { currency, language } = settings;
 
