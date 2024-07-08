@@ -18,6 +18,8 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { currencyValues, languageValues } from "@/drizzle/schema/settings";
 import { getSettings } from "../_actions/getSettings";
 import { Skeleton } from "@/components/ui/skeleton";
+import { MultiSelect } from "@/components/ui/multi-select";
+import { get } from "@/lib/get";
 
 export const SettingsForm = ({ orgId }: { orgId: OrgId }) => {
   const { data: settings, refetch } = useQuery({
@@ -51,13 +53,26 @@ export const SettingsForm = ({ orgId }: { orgId: OrgId }) => {
       </div>
     );
   }
-  const { currency, language } = settings;
+  const { currencies, language } = settings;
 
   return (
     <form className="flex flex-col gap-4" action={mutation.mutate}>
       <div>
         <Label>Default Currency</Label>
-        <Select name="currency" defaultValue={currency ?? undefined}>
+        <MultiSelect
+          name="currency"
+          options={currencyValues}
+          defaultValues={currencies.map(get("currency")).filter(Boolean)}
+        />
+      </div>
+      <div>
+        <Label>Default Currency</Label>
+        <Select
+          name="defaultCurrency"
+          defaultValue={
+            currencies.find((value) => value.isDefault)?.currency ?? undefined
+          }
+        >
           <SelectTrigger>
             <SelectValue />
           </SelectTrigger>

@@ -1,5 +1,5 @@
 {
-  "id": "519aeb86-5219-4117-856e-fc303258de7d",
+  "id": "fc02648b-06ed-469f-b56f-afb33a0336c4",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -8,18 +8,17 @@
       "name": "settings",
       "schema": "",
       "columns": {
-        "org_id": {
-          "name": "org_id",
-          "type": "text",
+        "settings_table_id": {
+          "name": "settings_table_id",
+          "type": "serial",
           "primaryKey": true,
           "notNull": true
         },
-        "currency": {
-          "name": "currency",
-          "type": "currency",
-          "typeSchema": "public",
+        "org_id": {
+          "name": "org_id",
+          "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "language": {
           "name": "language",
@@ -33,6 +32,206 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
+    },
+    "public.used_currencies": {
+      "name": "used_currencies",
+      "schema": "",
+      "columns": {
+        "used_currency_id": {
+          "name": "used_currency_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "settings_table_id": {
+          "name": "settings_table_id",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "currency": {
+          "name": "currency",
+          "type": "currency",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "is_default": {
+          "name": "is_default",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "used_currencies_settings_table_id_settings_settings_table_id_fk": {
+          "name": "used_currencies_settings_table_id_settings_settings_table_id_fk",
+          "tableFrom": "used_currencies",
+          "tableTo": "settings",
+          "columnsFrom": [
+            "settings_table_id"
+          ],
+          "columnsTo": [
+            "settings_table_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.budget": {
+      "name": "budget",
+      "schema": "",
+      "columns": {
+        "budget_id": {
+          "name": "budget_id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "org_id": {
+          "name": "org_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "month": {
+          "name": "month",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "year": {
+          "name": "year",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "time",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "time",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.category": {
+      "name": "category",
+      "schema": "",
+      "columns": {
+        "category_id": {
+          "name": "category_id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "category_type": {
+          "name": "category_type",
+          "type": "category_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "org_id": {
+          "name": "org_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.default_budget": {
+      "name": "default_budget",
+      "schema": "",
+      "columns": {
+        "default_budget_id": {
+          "name": "default_budget_id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "template_name": {
+          "name": "template_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "org_id": {
+          "name": "org_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "is_default": {
+          "name": "is_default",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.budget_item": {
+      "name": "budget_item",
+      "schema": "",
+      "columns": {
+        "item_id": {
+          "name": "item_id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "template_id": {
+          "name": "template_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "category_id": {
+          "name": "category_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "amount": {
+          "name": "amount",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
     }
   },
   "enums": {
@@ -40,9 +239,156 @@
       "name": "currency",
       "schema": "public",
       "values": [
-        "PLN",
+        "THB",
+        "USD",
+        "AUD",
+        "HKD",
+        "CAD",
+        "NZD",
+        "SGD",
         "EUR",
-        "USD"
+        "HUF",
+        "CHF",
+        "GBP",
+        "UAH",
+        "JPY",
+        "CZK",
+        "DKK",
+        "ISK",
+        "NOK",
+        "SEK",
+        "RON",
+        "BGN",
+        "TRY",
+        "ILS",
+        "CLP",
+        "PHP",
+        "MXN",
+        "ZAR",
+        "BRL",
+        "MYR",
+        "IDR",
+        "INR",
+        "KRW",
+        "CNY",
+        "XDR",
+        "AFN",
+        "MGA",
+        "PAB",
+        "ETB",
+        "VES",
+        "BOB",
+        "CRC",
+        "SVC",
+        "NIO",
+        "GMD",
+        "MKD",
+        "DZD",
+        "BHD",
+        "IQD",
+        "JOD",
+        "KWD",
+        "LYD",
+        "RSD",
+        "TND",
+        "MAD",
+        "AED",
+        "STN",
+        "BSD",
+        "BBD",
+        "BZD",
+        "BND",
+        "FJD",
+        "GYD",
+        "JMD",
+        "LRD",
+        "NAD",
+        "SRD",
+        "TTD",
+        "XCD",
+        "SBD",
+        "ZWL",
+        "VND",
+        "AMD",
+        "CVE",
+        "AWG",
+        "BIF",
+        "XOF",
+        "XAF",
+        "XPF",
+        "DJF",
+        "GNF",
+        "KMF",
+        "CDF",
+        "RWF",
+        "EGP",
+        "GIP",
+        "LBP",
+        "SSP",
+        "SDG",
+        "SYP",
+        "GHS",
+        "HTG",
+        "PYG",
+        "ANG",
+        "PGK",
+        "LAK",
+        "MWK",
+        "ZMW",
+        "AOA",
+        "MMK",
+        "GEL",
+        "MDL",
+        "ALL",
+        "HNL",
+        "SLE",
+        "SZL",
+        "LSL",
+        "AZN",
+        "MZN",
+        "NGN",
+        "ERN",
+        "TWD",
+        "TMT",
+        "MRU",
+        "TOP",
+        "MOP",
+        "ARS",
+        "DOP",
+        "COP",
+        "CUP",
+        "UYU",
+        "BWP",
+        "GTQ",
+        "IRR",
+        "YER",
+        "QAR",
+        "OMR",
+        "SAR",
+        "KHR",
+        "BYN",
+        "RUB",
+        "LKR",
+        "MVR",
+        "MUR",
+        "NPR",
+        "PKR",
+        "SCR",
+        "PEN",
+        "KGS",
+        "TJS",
+        "UZS",
+        "KES",
+        "SOS",
+        "TZS",
+        "UGX",
+        "BDT",
+        "WST",
+        "KZT",
+        "MNT",
+        "VUV",
+        "BAM",
+        "PLN"
       ]
     },
     "public.language": {
@@ -51,6 +397,17 @@
       "values": [
         "PL",
         "EN"
+      ]
+    },
+    "public.category_type": {
+      "name": "category_type",
+      "schema": "public",
+      "values": [
+        "REVENUE",
+        "COSTS",
+        "NEEDS",
+        "SAVINGS",
+        "WANTS"
       ]
     }
   },

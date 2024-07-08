@@ -1,9 +1,17 @@
 import type { OrgId } from "@/types/Id";
-import { integer, pgEnum, pgTable, text, time } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  integer,
+  pgEnum,
+  pgTable,
+  text,
+  time,
+} from "drizzle-orm/pg-core";
 import type { EnumValue } from "./types";
 
 export const categoryTypeEnum = pgEnum("category_type", [
-  "INCOME",
+  "REVENUE", // Money coming in
+  "COSTS", // Cost of gaining revenue
   "NEEDS",
   "SAVINGS",
   "WANTS",
@@ -25,9 +33,19 @@ export const budgetTable = pgTable("budget", {
   month: integer("month").notNull(), // 0-11
   year: integer("year").notNull(), // 2024
   createdAt: time("created_at").defaultNow(),
+  updatedAt: time("updated_at").defaultNow(),
 });
 
-export const defaultBudgetTable = pgTable("default_budget", {
-  defaultBudgetId: text("default_budget_id").primaryKey().notNull(),
+export const templateBudget = pgTable("default_budget", {
+  templatId: text("default_budget_id").primaryKey().notNull(),
+  templateName: text("template_name").notNull(),
   orgId: text("org_id").notNull(),
+  isDefault: boolean("is_default").notNull(),
+});
+
+export const templateItemTable = pgTable("budget_item", {
+  itemId: text("item_id").primaryKey().notNull(),
+  templateId: text("template_id").notNull(),
+  categoryId: text("category_id").notNull(),
+  amount: integer("amount").notNull(),
 });

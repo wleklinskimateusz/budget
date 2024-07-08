@@ -1,11 +1,11 @@
-import { Currency } from "@/drizzle/schema/settings";
-import { Branded } from "@/types/Branded";
+import type { Currency } from "@/drizzle/schema/settings";
+import type { Branded } from "@/types/Branded";
 
 const localeCurrency = {
   USD: "en-US",
   EUR: "de-DE",
   PLN: "pl-PL",
-} as const satisfies Record<Currency, string>;
+} as const satisfies Partial<Record<Currency, string>>;
 
 export type CurrencyString = Branded<string, "currency">;
 
