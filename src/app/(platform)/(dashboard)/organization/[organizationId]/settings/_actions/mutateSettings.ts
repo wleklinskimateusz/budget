@@ -1,11 +1,6 @@
 "use server";
 
-import {
-  currencyEnum,
-  languageEnum,
-  settingsTable,
-  usedCurrenciesTable,
-} from "@/drizzle/schema";
+import { settingsTable, usedCurrenciesTable } from "@/drizzle/schema";
 import type { OrgId } from "@/types/Id";
 import { revalidateTag } from "next/cache";
 import type { Currency, Language } from "@/drizzle/schema/settings";
@@ -14,34 +9,14 @@ import { and, eq } from "drizzle-orm";
 import type { QueryResult } from "@vercel/postgres";
 
 export async function mutateSettings(
-  formData: FormData,
+  currencies: Currency[],
+  defaultCurrency: Currency | undefined,
+  language: Language | undefined,
   organizationId: OrgId,
 ) {
-  const currencies = formData.getAll("currency").filter(isCurrency);
-  const language = formData.get("language");
-  const defaultCurrency = formData.get("defaultCurrency");
-  if (!isLanguage(language)) {
-    throw new Error("Invalid language");
-  }
-  if (currencies.length === 0) {
-    throw new Error("At least one currency must be selected");
-  }
-  if (!isCurrency(defaultCurrency)) {
-    throw new Error("Invalid default currency");
-  }
-
-  isLanguage(language);
   updateSettings(organizationId, currencies, defaultCurrency, language);
 
   revalidateTag("settings_" + organizationId);
-}
-
-function isCurrency(currency: unknown): currency is Currency {
-  return currencyEnum.enumValues.includes(currency as Currency);
-}
-
-function isLanguage(language: unknown): language is Language {
-  return languageEnum.enumValues.includes(language as Language);
 }
 
 async function updateSettings(
@@ -60,7 +35,6 @@ async function updateSettings(
     .then((rows) => rows[0]);
 
   if (!settings) {
-    console.log("no settings exist, creating one");
     return await db.transaction(async (trx) => {
       const id = await trx
         .insert(settingsTable)
@@ -71,11 +45,7 @@ async function updateSettings(
         .returning({ id: settingsTable.settingsTableId })
         .then((rows) => rows[0]?.id);
 
-      console.log("new settings created id", id);
-      if (!id) {
-        console.log("Failed to insert settings");
-        throw new Error("Failed to insert settings");
-      }
+      if (!id) throw new Error("Failed to insert settings");
 
       if (currencies.length > 0) {
         for (const currency of currencies) {

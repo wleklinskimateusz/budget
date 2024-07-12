@@ -15,19 +15,33 @@ import { toast } from "sonner";
 import { useFormStatus } from "react-dom";
 import type { OrgId } from "@/types/Id";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { currencyValues, languageValues } from "@/drizzle/schema/settings";
+import {
+  currencyValues,
+  languageValues,
+  type Currency,
+  type Language,
+} from "@/drizzle/schema/settings";
 import { getSettings } from "../_actions/getSettings";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MultiSelect } from "@/components/ui/multi-select";
-import { get } from "@/lib/get";
+import { useEffect, useState } from "react";
 
 export const SettingsForm = ({ orgId }: { orgId: OrgId }) => {
+  const [selectedCurrencies, setSelectedCurrencies] = useState<Currency[]>([]);
+  const [selectedLanguage, setSelectedLanguage] = useState<
+    Language | undefined
+  >();
+  const [defaultCurrency, setDefaultCurrency] = useState<
+    Currency | undefined
+  >();
+
   const { data: settings, refetch } = useQuery({
     queryKey: ["settings", orgId],
     queryFn: () => getSettings(orgId),
   });
   const mutation = useMutation({
-    mutationFn: (formData: FormData) => mutateSettings(formData, orgId),
+    mutationFn: () =>
+      mutateSettings(selectedCurrencies, undefined, selectedLanguage, orgId),
     onSuccess: () => {
       toast.success("Settings saved");
       refetch();
@@ -37,6 +51,21 @@ export const SettingsForm = ({ orgId }: { orgId: OrgId }) => {
       toast.error("Failed to save settings");
     },
   });
+
+  useEffect(() => {
+    if (settings?.currencies) {
+      setSelectedCurrencies(
+        settings.currencies.map((c) => c.currency).filter(Boolean),
+      );
+      setDefaultCurrency(
+        settings.currencies.find((value) => value.isDefault)?.currency ??
+          undefined,
+      );
+    }
+    if (settings?.language) setSelectedLanguage(settings.language);
+  }, [settings]);
+
+  console.log("language", selectedLanguage);
 
   if (!settings) {
     return (
@@ -53,33 +82,27 @@ export const SettingsForm = ({ orgId }: { orgId: OrgId }) => {
       </div>
     );
   }
-  const { currencies, language } = settings;
 
   return (
-    <form className="flex flex-col gap-4" action={mutation.mutate}>
+    <form className="flex flex-col gap-4" action={() => mutation.mutate()}>
       <div>
         <Label>Default Currency</Label>
         <MultiSelect
-          name="currency"
           options={currencyValues}
-          defaultValues={currencies.map(get("currency")).filter(Boolean)}
+          values={selectedCurrencies}
+          setValues={setSelectedCurrencies}
         />
       </div>
       <div>
         <Label>Default Currency</Label>
-        <Select
-          name="defaultCurrency"
-          defaultValue={
-            currencies.find((value) => value.isDefault)?.currency ?? undefined
-          }
-        >
+        <Select name="defaultCurrency" defaultValue={defaultCurrency}>
           <SelectTrigger>
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
               <SelectLabel>Currency</SelectLabel>
-              {currencyValues.map((c) => (
+              {selectedCurrencies.map((c) => (
                 <SelectItem key={c} value={c}>
                   {c}
                 </SelectItem>
@@ -90,8 +113,8 @@ export const SettingsForm = ({ orgId }: { orgId: OrgId }) => {
       </div>
       <div>
         <Label>Language</Label>
-        <Select name="language" defaultValue={language ?? undefined}>
-          <SelectTrigger>
+        <Select name="language" defaultValue={selectedLanguage}>
+          <SelectTrigger value={selectedLanguage}>
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
