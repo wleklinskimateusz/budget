@@ -23,10 +23,7 @@ export async function getSettings(orgId: OrgId) {
 
   const setting = settings[0];
   if (!setting) {
-    return {
-      language: undefined,
-      currencies: [],
-    };
+    return undefined;
   }
 
   if (settings.find((setting) => setting.id !== setting.id)) {

@@ -122,30 +122,24 @@ async function updateSettings(
           !currencies.some((currency) => currentCurrency.currency === currency),
       );
 
-      const addingPromise = Promise.all(
-        newCurrencies.map((currency) =>
-          tx
-            .insert(usedCurrenciesTable)
-            .values({
-              settingsTableId: settings.settingsTableId,
-              currency,
-              isDefault: currency === defaultCurrency,
-            })
-            .execute(),
-        ),
-      );
-
-      const deletePromise = toDelete.map((currency) =>
-        tx
+      for (const currency of toDelete) {
+        await tx
           .delete(usedCurrenciesTable)
           .where(
             and(
               eq(usedCurrenciesTable.settingsTableId, settings.settingsTableId),
               eq(usedCurrenciesTable.currency, currency.currency),
             ),
-          )
-          .execute(),
-      );
+          );
+      }
+
+      for (const currency of newCurrencies) {
+        await tx.insert(usedCurrenciesTable).values({
+          settingsTableId: settings.settingsTableId,
+          currency,
+          isDefault: currency === defaultCurrency,
+        });
+      }
 
       const oldDefaultCurrency = currencies.find(
         (currency) => currency === defaultCurrency,
@@ -184,12 +178,7 @@ async function updateSettings(
         changingDefault.push(changingOldDefault, changingNewDefault);
       }
 
-      await Promise.all([
-        addingPromise,
-        deletePromise,
-        settingsUpdate,
-        ...changingDefault,
-      ]);
+      await Promise.all([settingsUpdate, ...changingDefault]);
     }
   });
 }
